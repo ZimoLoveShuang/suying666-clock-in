@@ -1,3 +1,4 @@
+import os
 import re
 
 import requests
@@ -48,7 +49,6 @@ def login(host):
         with open('hosts.txt', 'w', encoding='utf-8') as f:
             for i in hosts:
                 f.write('{}\n'.format(i))
-    return msg
 
 
 # 速鹰666签到领流量
@@ -81,19 +81,19 @@ def main_handler(event, context):
     for host in hosts:
         try:
             print('try', host)
-            msg = login(host)
+            login(host)
             json = clockIn(host)
             msg = json['msg']
             ret = json['ret']
-            print(ret)
-            print(msg)
-            if ret == 0:
-                if msg != '您似乎已经签到过了...':
-                    sendMessage(msg)
-                exit()
+            if ret == 1:
+                sendMessage(msg)
+                break
+            else:
+                break
         except Exception as e:
             print(e)
 
 
 if __name__ == '__main__':
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     main_handler({}, {})

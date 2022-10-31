@@ -1,5 +1,6 @@
-name: Hexo Auto-Deploy
+name: Suying666-auto-clock-in
 on:
+  [ push ]
   schedule:
     - cron: '30 17 * * *'
 jobs:

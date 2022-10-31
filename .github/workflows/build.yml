@@ -1,0 +1,33 @@
+name: Hexo Auto-Deploy
+on:
+  schedule:
+    - cron: '30 17 * * *'
+jobs:
+  build:
+    name: Suying666-clock-in by GitHub Actions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. git checkout...
+        uses: actions/checkout@v3
+
+      - name: 2. setup python3...
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8.10'
+
+      - name: 3. install requirements...
+        run: pip install -r requirements.txt
+
+      - name: 4. do sign in...
+        run: python index.py "$EMAIL" "$PASSWD" "$KEY"
+        env:
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWD: ${{ secrets.PASSWD }}
+          KEY: ${{ secrets.KEY }}
+
+      - name: 5. update github repository...
+        run: |
+          git add .
+          git commit -m "auto-update"
+          git push -f

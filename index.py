@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 
 import requests
 from bs4 import BeautifulSoup
@@ -96,4 +97,12 @@ def main_handler(event, context):
 
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    if len(sys.argv) != 4:
+        print('usage:python3 {} "email" "passwd" "key"'.format(sys.argv[0]))
+        exit()
+    print(sys.argv[1:])
+    email, passwd, key = sys.argv[1:]
+    if (not len(email)) or (not len(passwd)):
+        print('email or passwd is null')
+        exit()
     main_handler({}, {})

@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 0. set timezone...
+      - uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Asia/Shanghai"
       - name: 1. git checkout...
         uses: actions/checkout@v3
 
@@ -15,6 +19,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.8.10'
+          cache: 'pip'
 
       - name: 3. install requirements...
         run: pip install -r requirements.txt

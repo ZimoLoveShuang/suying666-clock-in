@@ -8,10 +8,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 0. set timezone...
-      - uses: szenius/set-timezone@v1.0
-        with:
-          timezoneLinux: "Asia/Shanghai"
       - name: 1. git checkout...
         uses: actions/checkout@v3
 

@@ -1,5 +1,7 @@
 name: Suying666-auto-clock-in
 on:
+  push:
+    branches: [ master ]
   schedule:
     - cron: '30 17 * * *'
 jobs:

@@ -75,7 +75,7 @@ def clockIn(host):
 def sendMessage(msg):
     url = 'https://sc.ftqq.com/' + key + '.send?text=' + msg;
     res = requests.get(url)
-    print(res.json())
+    # print(res.json())
 
 
 def main_handler(event, context):

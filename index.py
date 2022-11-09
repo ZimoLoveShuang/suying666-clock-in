@@ -42,12 +42,12 @@ def login(host):
         del headers['Content-Type']
         html = session.get('{}/user'.format(host), headers=headers).text
         soup = BeautifulSoup(html, 'lxml')
-        # for i in soup.find_all(text=re.compile('<h5 id=".*"><a class="reference-link" .*</a></h5>')):
         hosts = set()
         for i in soup.find_all('h5'):
             a = i.find('a', text=re.compile('http.*'))
             if a:
                 hosts.add(a.text)
+        hosts = sorted(list(hosts))
         with open('hosts.txt', 'w', encoding='utf-8') as f:
             for i in hosts:
                 f.write('{}\n'.format(i))

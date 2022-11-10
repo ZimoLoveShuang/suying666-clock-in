@@ -1,5 +1,6 @@
 import datetime
 import os
+import random
 import re
 import sys
 
@@ -47,7 +48,6 @@ def login(host):
             a = i.find('a', text=re.compile('http.*'))
             if a:
                 hosts.add(a.text)
-        hosts = sorted(list(hosts))
         with open('hosts.txt', 'w', encoding='utf-8') as f:
             for i in hosts:
                 f.write('{}\n'.format(i))

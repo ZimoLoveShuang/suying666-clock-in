@@ -1,13 +1,13 @@
 name: Suying666-auto-clock-in
 on:
-#  push:
-#    branches: [ master ]
+  push:
+    branches: [ master ]
   schedule:
     - cron: '0 1 * * *'
 jobs:
   build:
     name: Suying666-clock-in by GitHub Actions
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: 1. git checkout...

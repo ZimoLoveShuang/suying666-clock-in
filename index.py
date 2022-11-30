@@ -1,6 +1,5 @@
 import datetime
 import os
-import random
 import re
 import sys
 
@@ -38,6 +37,7 @@ def login(host):
     res = session.post(url=url, headers=headers, data=params, timeout=10)
     msg = res.json()['msg']
     print(msg)
+    ret = ''
     if msg == '登录成功':
         # 登陆成功之后，去更新hosts.txt
         del headers['Content-Type']
@@ -51,6 +51,17 @@ def login(host):
         with open('hosts.txt', 'w', encoding='utf-8') as f:
             for i in hosts:
                 f.write('{}\n'.format(i))
+        # 获取登陆信息
+        statistics = soup.find_all(class_='card card-statistic-2')
+        for i in statistics:
+            for j in i.text.split('\n'):
+                if len(j) > 1:
+                    a = j.replace('\n', '').replace('\r', '').replace('升级套餐', '').strip()
+                    ret += a + ' '
+            ret += '\n'
+        return ret
+    else:
+        raise Exception(msg)
 
 
 # 速鹰666签到领流量
@@ -73,7 +84,7 @@ def clockIn(host):
 
 
 def sendMessage(msg):
-    url = 'https://sc.ftqq.com/' + key + '.send?text=' + msg;
+    url = 'https://sc.ftqq.com/' + key + '.send?text=' + msg
     res = requests.get(url)
     # print(res.json())
 
@@ -83,12 +94,13 @@ def main_handler(event, context):
     for host in hosts:
         try:
             print('try', host)
-            login(host)
+            lmsg = login(host)
             json = clockIn(host)
             msg = json['msg']
             ret = json['ret']
+            # print(lmsg + '今日签到 ' + msg)
             if ret == 1:
-                sendMessage(msg)
+                sendMessage(lmsg + '今日签到 ' + msg)
                 break
             else:
                 break

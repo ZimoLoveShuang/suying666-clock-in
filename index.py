@@ -58,7 +58,7 @@ def login(host):
                 if len(j) > 1:
                     a = j.replace('\n', '').replace('\r', '').replace('升级套餐', '').strip()
                     ret += a + ' '
-            ret += '\n'
+            ret += '\n\n'
         return ret
     else:
         raise Exception(msg)
@@ -84,9 +84,16 @@ def clockIn(host):
 
 
 def sendMessage(msg):
-    url = 'https://sc.ftqq.com/' + key + '.send?text=' + msg
-    res = requests.get(url)
-    # print(res.json())
+    # print(msg)
+    if key:
+        res = requests.post(
+            url='https://sc.ftqq.com/' + key + '.send',
+            data={
+                'title': '速鹰666自动签到结果通知',
+                'desp': msg
+            }
+        )
+        # print(res.text)
 
 
 def main_handler(event, context):

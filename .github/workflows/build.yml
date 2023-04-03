@@ -4,6 +4,7 @@ on:
     branches: [ master ]
   schedule:
     - cron: '0 1 * * *'
+permissions: write-all
 jobs:
   build:
     name: Suying666-clock-in by GitHub Actions
@@ -27,12 +28,17 @@ jobs:
           PASSWD: ${{ secrets.PASSWD }}
           KEY: ${{ secrets.KEY }}
 
-      - name: 4. update github repository...
+      - name: 4. commit...
         run: |
           git config --global user.email "$EMAIL"
           git config --global user.name "bot"
           git add .
           git commit -m "auto-update"
-          git push -f
         env:
           EMAIL: ${{ secrets.EMAIL }}
+
+      - name: 5. push changes to repository...
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master

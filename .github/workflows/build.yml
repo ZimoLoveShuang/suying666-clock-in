@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: Suying666-clock-in by GitHub Actions
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: 1. git checkout...

@@ -16,7 +16,11 @@ jobs:
       - name: 2. setup python3...
         uses: actions/setup-python@v4
         with:
-          python-version: '3.8.10'
+          python-version: |
+            3.8
+            3.9
+            3.10
+          check-latest: true
           cache: 'pip'
       - run: pip install -r requirements.txt
 

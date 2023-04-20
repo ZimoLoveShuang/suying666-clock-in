@@ -34,14 +34,14 @@ def login(host):
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
         'X-Requested-With': 'XMLHttpRequest',
     }
-    res = session.post(url=url, headers=headers, data=params, timeout=10)
+    res = session.post(url=url, headers=headers, data=params, timeout=30)
     msg = res.json()['msg']
     print(msg)
     ret = ''
     if msg == '登录成功':
         # 登陆成功之后，去更新hosts.txt
         del headers['Content-Type']
-        html = session.get('{}/user'.format(host), headers=headers).text
+        html = session.get('{}/user'.format(host), headers=headers, timeout=30).text
         soup = BeautifulSoup(html, 'lxml')
         hosts = set()
         for i in soup.find_all('h5'):
@@ -77,7 +77,7 @@ def clockIn(host):
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'zh-CN,zh;q=0.9',
     }
-    res = session.post(url=url, headers=headers)
+    res = session.post(url=url, headers=headers, timeout=30)
     json = res.json()
     print(json)
     return json
@@ -91,7 +91,8 @@ def sendMessage(msg):
             data={
                 'title': '速鹰666自动签到结果通知',
                 'desp': msg
-            }
+            },
+            timeout=30
         )
         # print(res.text)
 

@@ -31,7 +31,7 @@ def login(host):
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'Origin': url,
         'Referer': '{}/auth/login'.format(url),
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
         'X-Requested-With': 'XMLHttpRequest',
     }
     res = session.post(url=url, headers=headers, data=params, timeout=30)
@@ -41,6 +41,7 @@ def login(host):
     if msg == '登录成功':
         # 登陆成功之后，去更新hosts.txt
         del headers['Content-Type']
+        headers['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
         html = session.get('{}/user'.format(host), headers=headers, timeout=30).text
         soup = BeautifulSoup(html, 'lxml')
         hosts = set()
@@ -51,6 +52,7 @@ def login(host):
         with open('hosts.txt', 'w', encoding='utf-8') as f:
             for i in hosts:
                 f.write('{}\n'.format(i))
+        print('更新hosts.txt完成')
         # 获取登陆信息
         statistics = soup.find_all(class_='card card-statistic-2')
         for i in statistics:
@@ -68,14 +70,14 @@ def login(host):
 def clockIn(host):
     url = '{}/user/checkin'.format(host)
     headers = {
-        'Connection': 'keep-alive',
-        'Content-Length': '0',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
-        'X-Requested-With': 'XMLHttpRequest',
-        'Origin': url,
-        'Referer': '{}/user'.format(host),
-        'Accept-Encoding': 'gzip, deflate',
+        'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Content-Length': '0',
+        'Origin': host,
+        'Referer': '{}/user'.format(host),
+        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
+        'X-Requested-With': 'XMLHttpRequest',
     }
     res = session.post(url=url, headers=headers, timeout=30)
     json = res.json()

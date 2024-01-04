@@ -35,7 +35,9 @@ def login(host):
         'X-Requested-With': 'XMLHttpRequest',
     }
     res = session.get(url=host, headers=headers)
+    print(res.text)
     cookie = requests.utils.dict_from_cookiejar(res.cookies)
+    print(cookie)
     # 做浏览器认证
     if 'ge_ua_key' in cookie:
         n = cookie['ge_ua_key']

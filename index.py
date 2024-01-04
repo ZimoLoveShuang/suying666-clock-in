@@ -53,7 +53,7 @@ def login(host):
                 a += ord(d) * (nonce + o)
         res = session.post(
             url=res.url,
-            data="sum=" + a + "&nonce=" + nonce,
+            params={'sum': a, 'nonce': nonce},
             headers={'Content-type': 'application/x-www-form-urlencoded', 'X-GE-UA-Step': 'prev'}
         )
         print(res.text)

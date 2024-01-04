@@ -35,11 +35,25 @@ def login(host):
         'X-Requested-With': 'XMLHttpRequest',
     }
     res = session.get(url=host, headers=headers)
-    cookie = res.cookies
-    print(cookie)
-    print(res.text)
+    cookie = requests.utils.dict_from_cookiejar(res.cookies)
+    # 做浏览器认证
+    if 'ge_ua_key' in cookie:
+        n = cookie['ge_ua_key']
+        s = re.search('var nonce = \d+;', res.text)
+        nonce = int(s[0][s[0].rindex('=') + 1:-1])
+        print(nonce)
+        a = 0
+        for o in range(len(n)):
+            d = n[o]
+            if d.isalpha() or d.isdigit():
+                a += ord(d) * (nonce + o)
+        res = session.post(
+            url=res.url,
+            data={'sum': a, 'nonce': nonce},
+            headers={'Content-type': 'application/x-www-form-urlencoded', 'X-GE-UA-Step': 'prev'}
+        )
+        print(res.text)
     res = session.post(url=url, headers=headers, data=params, timeout=30)
-    print(res.text)
     msg = res.json()['msg']
     print(msg)
     ret = ''

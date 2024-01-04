@@ -18,6 +18,7 @@ session = requests.session()
 
 # 登陆
 def login(host):
+    session.get(host)
     url = '{}/auth/login'.format(host)
     params = {
         'email': email,

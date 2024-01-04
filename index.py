@@ -51,6 +51,7 @@ def login(host):
             d = n[o]
             if d.isalpha() or d.isdigit():
                 a += ord(d) * (nonce + o)
+        print('a', a)
         res = session.post(
             url=res.url,
             data={'sum': a, 'nonce': nonce},

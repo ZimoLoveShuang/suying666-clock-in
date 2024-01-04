@@ -41,13 +41,14 @@ def login(host):
     if msg == '登录成功':
         # 登陆成功之后，去更新hosts.txt
         del headers['Content-Type']
-        headers['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
+        headers[
+            'Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
         html = session.get('{}/user'.format(host), headers=headers, timeout=30).text
         soup = BeautifulSoup(html, 'lxml')
         hosts = set()
         for i in soup.find_all('h5'):
             a = i.find('a', text=re.compile('http.*'))
-            if a:
+            if a and re.search(r'[\u4e00-\u9fa5]', a.text) is None:
                 hosts.add(a.text)
         with open('hosts.txt', 'w', encoding='utf-8') as f:
             for i in hosts:
@@ -76,7 +77,7 @@ def clockIn(host):
         'Content-Length': '0',
         'Origin': host,
         'Referer': '{}/user'.format(host),
-        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
         'X-Requested-With': 'XMLHttpRequest',
     }
     res = session.post(url=url, headers=headers, timeout=30)

@@ -40,9 +40,9 @@ def login(host):
     cookie = requests.utils.dict_from_cookiejar(res.cookies)
     print(cookie)
     # 做浏览器认证
-    if 'ge_ua_key' in cookie:
+    if 'ge_ua_p' in cookie:
         time.sleep(5)
-        n = cookie['ge_ua_key']
+        n = cookie['ge_ua_p']
         s = re.search('var nonce = \d+;', res.text)
         nonce = int(s[0][s[0].rindex('=') + 1:-1])
         print(nonce)
@@ -53,7 +53,7 @@ def login(host):
                 a += ord(d) * (nonce + o)
         res = session.post(
             url=res.url,
-            params={'sum': a, 'nonce': nonce},
+            data={'sum': a, 'nonce': nonce},
             headers={'Content-type': 'application/x-www-form-urlencoded', 'X-GE-UA-Step': 'prev'}
         )
         print(res.text)

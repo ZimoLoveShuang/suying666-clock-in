@@ -71,10 +71,11 @@ def login(host):
             'Referer': host + '/',
             'Accept-Encoding': 'gzip, deflate, br',
             'Accept-Language': 'zh-CN,zh;q=0.9',
+            'Cookie': 'ge_ua_p=' + n,
         }
         res = session.post(
             url=res.url,
-            params={'sum': a, 'nonce': nonce},
+            data={'sum': a, 'nonce': nonce},
             headers=headers
         )
         print(res.text)

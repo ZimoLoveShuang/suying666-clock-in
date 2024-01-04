@@ -35,6 +35,7 @@ def login(host):
         'X-Requested-With': 'XMLHttpRequest',
     }
     res = session.post(url=url, headers=headers, data=params, timeout=30)
+    print(res.text)
     msg = res.json()['msg']
     print(msg)
     ret = ''

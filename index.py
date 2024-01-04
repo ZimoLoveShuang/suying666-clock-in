@@ -18,7 +18,6 @@ session = requests.session()
 
 # 登陆
 def login(host):
-    session.get(host)
     url = '{}/auth/login'.format(host)
     params = {
         'email': email,
@@ -35,6 +34,10 @@ def login(host):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
         'X-Requested-With': 'XMLHttpRequest',
     }
+    res = session.get(url=host, headers=headers)
+    cookie = res.cookies
+    print(cookie)
+    print(res.text)
     res = session.post(url=url, headers=headers, data=params, timeout=30)
     print(res.text)
     msg = res.json()['msg']

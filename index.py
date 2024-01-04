@@ -3,6 +3,7 @@ import os
 import re
 import sys
 import time
+from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -19,6 +20,66 @@ session = requests.session()
 
 # 登陆
 def login(host):
+    parsed_url = urlparse(host)
+    # 1. 做浏览器认证
+    headers = {
+        'host': parsed_url.netloc,
+        'Connection': 'keep-alive',
+        'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-User': '?1',
+        'Sec-Fetch-Dest': 'document',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+    }
+    res = session.get(url=host, headers=headers)
+    # print(res.text)
+    cookie = requests.utils.dict_from_cookiejar(res.cookies)
+    if 'ge_ua_p' in cookie:
+        time.sleep(5)
+        print(cookie)
+        n = cookie['ge_ua_p']
+        s = re.search('var nonce = \d+;', res.text)
+        nonce = int(s[0][s[0].rindex('=') + 1:-1])
+        print(nonce)
+        a = 0
+        for o in range(len(n)):
+            d = n[o]
+            if d.isalpha() or d.isdigit():
+                a += ord(d) * (nonce + o)
+        print('a', a)
+        headers = {
+            'Host': parsed_url.netloc,
+            'Connection': 'keep-alive',
+            'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+            'sec-ch-ua-platform': '"Windows"',
+            'X-GE-UA-Step': 'prev',
+            'sec-ch-ua-mobile': '?0',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Content-type': 'application/x-www-form-urlencoded',
+            'Accept': '*/*',
+            'Origin': host,
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Dest': 'empty',
+            'Referer': host + '/',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+        }
+        res = session.post(
+            url=res.url,
+            params={'sum': a, 'nonce': nonce},
+            headers=headers
+        )
+        print(res.text)
+
+    # 2. 登录
     url = '{}/auth/login'.format(host)
     params = {
         'email': email,
@@ -35,29 +96,6 @@ def login(host):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
         'X-Requested-With': 'XMLHttpRequest',
     }
-    res = session.get(url=host, headers=headers)
-    print(res.text)
-    cookie = requests.utils.dict_from_cookiejar(res.cookies)
-    print(cookie)
-    # 做浏览器认证
-    if 'ge_ua_p' in cookie:
-        time.sleep(5)
-        n = cookie['ge_ua_p']
-        s = re.search('var nonce = \d+;', res.text)
-        nonce = int(s[0][s[0].rindex('=') + 1:-1])
-        print(nonce)
-        a = 0
-        for o in range(len(n)):
-            d = n[o]
-            if d.isalpha() or d.isdigit():
-                a += ord(d) * (nonce + o)
-        print('a', a)
-        res = session.post(
-            url=res.url,
-            params={'sum': a, 'nonce': nonce},
-            headers={'Content-type': 'application/x-www-form-urlencoded', 'X-GE-UA-Step': 'prev'}
-        )
-        print(res.text)
     res = session.post(url=url, headers=headers, data=params, timeout=30)
     msg = res.json()['msg']
     print(msg)

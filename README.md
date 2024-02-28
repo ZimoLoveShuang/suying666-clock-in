@@ -15,3 +15,7 @@
 
 1. 每次登陆成功后，自动更新hosts.txt，避免因为host被墙，而自动签到失败
 2. 完全免费，不需要服务器，与云函数
+
+# Star History
+
+![](https://starchart.cc/ZimoLoveShuang/suying666-clock-in.svg?variant=adaptive)

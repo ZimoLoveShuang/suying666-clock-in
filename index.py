@@ -109,7 +109,7 @@ def login(host):
         html = session.get('{}/user'.format(host), headers=headers, timeout=30).text
         soup = BeautifulSoup(html, 'lxml')
         hosts = set()
-        for i in soup.find_all('h5'):
+        for i in soup.find_all('h6'):
             a = i.find('a', text=re.compile('http.*'))
             if a and re.search(r'[\u4e00-\u9fa5]', a.text) is None:
                 hosts.add(a.text)
@@ -180,6 +180,13 @@ def main_handler(event, context):
                 break
         except Exception as e:
             print(e)
+    # 当没有更新hosts时，保留原有的hosts
+    hosts2 = [i.strip() for i in open('hosts.txt', 'r', encoding='utf-8').readlines()]
+    if not hosts2:
+        with open('hosts.txt', 'w', encoding='utf-8') as f:
+            for i in hosts:
+                f.write('{}\n'.format(i))
+
 
 
 if __name__ == '__main__':

@@ -111,7 +111,7 @@ def login(host):
         hosts = set()
         for i in soup.find_all('h6'):
             a = i.find('a', text=re.compile('http.*'))
-            if a and re.search(r'[\u4e00-\u9fa5]', a.text) is None:
+            if (a) and (re.search(r'[\u4e00-\u9fa5]', a.text) is None) and ('美区苹果账号购买地址' not in a.text):
                 hosts.add(a.text)
         with open('hosts.txt', 'w', encoding='utf-8') as f:
             for i in hosts:
